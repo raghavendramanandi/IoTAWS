@@ -3,5 +3,5 @@
 - ESP8266 (NodeMCU)
 - Arduino IDE
 - LDR
-- AWS Lamda
+- AWS Lambda
 - DynamoDB
