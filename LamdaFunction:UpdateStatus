@@ -1,26 +1,78 @@
 exports.handler = (event, context, callback) => {
-    var status1 = 'stopped'
+    /*List of parameters from API*/
+    var lightStatus = 'off'
+    var team = 'p4r'
+    var deviceId = 3
+    var oppositLightStatus = (lightStatus == 'off') ? "on":"off"; 
+    
+    /*Running the ligic
+    ->  Update the record (Irrespective)
+    -> check if there is any record in the status other than this
+	    if yes
+	   -> Do nothing
+	    else
+	    -> get the list of instances
+	    -> And set them to state set.
+    */
+    
+    
     var AWS = require('aws-sdk');
+    /*
     var ec2 = new AWS.EC2({region: 'us-east-2'});
     ec2.stopInstances({InstanceIds : ['i-0f428f17d8be4acd5'] },function (err, data) {
         if (err) console.log(err, err.stack); // an error occurred
         else console.log(data); // successful response
         context.done(err,data);
-    });
+    });*/
     
     var docClient = new AWS.DynamoDB.DocumentClient();
     var params = {
-                    TableName:"DeviceAndDeviceInfo",
+                    TableName:"DeviceAndLightInfo",
                     Key: {
-                            deviceId : 2
+                            id : 2,
+                            team : "p4r",
+                            lightStatus : "on"
                         },
-                    UpdateExpression: "set status1 = :status1",
+                    UpdateExpression: "set lightStatus1 = :lightStatus",
                     ExpressionAttributeValues:{
-                        ":status1":status1
+                        ":lightStatus":lightStatus
                     },
                     ReturnValues:"UPDATED_NEW"
                 };
     docClient.update(params,callback);
     
+    /*var params = {
+    TableName:"DeviceAndLightInfo",
+    KeyConditionExpression:"#team = :team, #lightStatus = :lightStatus",
+    ExpressionAttributeNames: {
+        "#team":"team",
+        "#lightStatus":"lightStatus"
+        },
+    ExpressionAttributeValues: {
+        ":team":team,
+        ":lightStatus":oppositLightStatus
+        }
+    };
+
+    var items = []
+    
+    var queryExecute = function(callback) {
+    docClient.query(params,function(err,result) {
+        if(err) {
+            callback(err);
+            } else {
+            console.log(result)
+            items = items.concat(result.Items);
+            if(result.LastEvaluatedKey) {
+                params.ExclusiveStartKey = result.LastEvaluatedKey;
+                queryExecute(callback);
+                } else {
+                    callback(err,items);
+                }
+            }
+        });
+    }
+    queryExecute(callback);
+    console.log(items)*/
     console.log('Hello World')
 };
