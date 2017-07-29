@@ -1,0 +1,26 @@
+exports.handler = (event, context, callback) => {
+    var status1 = 'stopped'
+    var AWS = require('aws-sdk');
+    var ec2 = new AWS.EC2({region: 'us-east-2'});
+    ec2.stopInstances({InstanceIds : ['i-0f428f17d8be4acd5'] },function (err, data) {
+        if (err) console.log(err, err.stack); // an error occurred
+        else console.log(data); // successful response
+        context.done(err,data);
+    });
+    
+    var docClient = new AWS.DynamoDB.DocumentClient();
+    var params = {
+                    TableName:"DeviceAndDeviceInfo",
+                    Key: {
+                            deviceId : 2
+                        },
+                    UpdateExpression: "set status1 = :status1",
+                    ExpressionAttributeValues:{
+                        ":status1":status1
+                    },
+                    ReturnValues:"UPDATED_NEW"
+                };
+    docClient.update(params,callback);
+    
+    console.log('Hello World')
+};
