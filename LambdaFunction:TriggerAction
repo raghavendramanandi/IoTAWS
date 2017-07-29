@@ -3,6 +3,8 @@ exports.handler = (event, context, callback) => {
     var AWS = require('aws-sdk');
     var docClient = new AWS.DynamoDB.DocumentClient();
     
+    console.log(event.hello)
+    
     var lightStatus = "off"
     var team = "p4r"
     var deviceId = 3
@@ -48,11 +50,11 @@ exports.handler = (event, context, callback) => {
     }
     queryExecute(callback);
     
-    /*
+    
     var ec2 = new AWS.EC2({region: 'us-east-2'});
     ec2.stopInstances({InstanceIds : ['i-0f428f17d8be4acd5'] },function (err, data) {
         if (err) console.log(err, err.stack); // an error occurred
         else console.log(data); // successful response
         context.done(err,data);
-    });*/
+    });
 };
