@@ -31,6 +31,22 @@ exports.handler = (event, context, callback) => {
                 };
     docClient.update(params,callback);
     
+    var lambda = new AWS.Lambda({
+    region: 'us-west-1'
+    });
+
+    lambda.invoke({
+            FunctionName: 'TriggerAction',
+            Payload: JSON.stringify({hello: 'world'})
+        }, function(err, data) {
+        if (err) console.log(err, err.stack); // an error occurred
+  else     console.log(data);           // successful response
+    });
     
+    /*lambda.invoke('TriggerAction', {hello: 'world'}).then(result => {
+        console.log(result);
+        //=> '{"foo": "bar"}' 
+    });*/
+
     console.log('Hello World')
 };
