@@ -28,7 +28,7 @@ exports.handler = (event, context, callback) => {
     });*/
     
     var docClient = new AWS.DynamoDB.DocumentClient();
-    /*var params = {
+    var params = {
                     TableName:"DeviceAndLightStatus",
                     Key: {
                             deviceId : deviceId
@@ -40,7 +40,7 @@ exports.handler = (event, context, callback) => {
                     },
                     ReturnValues:"UPDATED_NEW"
                 };
-    docClient.update(params,callback);*/
+    docClient.update(params,callback);
     
     var params = {
     TableName:"DeviceAndLightStatus",
@@ -65,6 +65,11 @@ exports.handler = (event, context, callback) => {
             } else {
             console.log(result)
             items = items.concat(result.Items);
+            console.log("Im not waste: " + items)
+            //console.log("Im not waste: " + items.size())
+            items.forEach(function(item){
+                console.log(item)
+            });
             if(result.LastEvaluatedKey) {
                 params.ExclusiveStartKey = result.LastEvaluatedKey;
                 queryExecute(callback);
@@ -75,6 +80,5 @@ exports.handler = (event, context, callback) => {
         });
     }
     queryExecute(callback);
-    console.log("Im waste: " + items)
     console.log('Hello World')
 };
