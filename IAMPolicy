@@ -1,0 +1,25 @@
+/*
+This new custom policy was added to allow Lambda function UpdateStatus to
+access and run Lambda function TriggerAction
+It grants 2 priveledges:
+- InvokeAsync
+- InvokeFunction
+*/
+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Stmt1464440182000",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:InvokeAsync",
+                "lambda:InvokeFunction"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
