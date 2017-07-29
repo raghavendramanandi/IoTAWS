@@ -1,9 +1,11 @@
 exports.handler = (event, context, callback) => {
     /*List of parameters from API*/
-    var lightStatus = 'off'
-    var team = 'p4r'
+    var lightStatus = "off"
+    var team = "p4r"
     var deviceId = 3
-    var oppositLightStatus = (lightStatus == 'off') ? "on":"off"; 
+    var oppositLightStatus = (lightStatus == 'off') ? "on":"off";
+    
+    console.log("oppositLightStatus: " + oppositLightStatus)
     
     /*Running the ligic
     ->  Update the record (Irrespective)
@@ -26,38 +28,38 @@ exports.handler = (event, context, callback) => {
     });*/
     
     var docClient = new AWS.DynamoDB.DocumentClient();
-    var params = {
-                    TableName:"DeviceAndLightInfo",
+    /*var params = {
+                    TableName:"DeviceAndLightStatus",
                     Key: {
-                            id : 2,
-                            team : "p4r",
-                            lightStatus : "on"
+                            deviceId : deviceId
                         },
-                    UpdateExpression: "set lightStatus1 = :lightStatus",
+                    UpdateExpression: "set lightStatus = :lightStatus, team = :team",
                     ExpressionAttributeValues:{
-                        ":lightStatus":lightStatus
+                        ":lightStatus":lightStatus,
+                        ":team":team
                     },
                     ReturnValues:"UPDATED_NEW"
                 };
-    docClient.update(params,callback);
+    docClient.update(params,callback);*/
     
-    /*var params = {
-    TableName:"DeviceAndLightInfo",
-    KeyConditionExpression:"#team = :team, #lightStatus = :lightStatus",
+    var params = {
+    TableName:"DeviceAndLightStatus",
+    ProjectionExpression: "#team",
+    FilterExpression: "#team = :team AND #lightStatus = :lightStatus",
     ExpressionAttributeNames: {
         "#team":"team",
-        "#lightStatus":"lightStatus"
+        "#lightStatus":"lightStatus",
         },
     ExpressionAttributeValues: {
-        ":team":team,
-        ":lightStatus":oppositLightStatus
+        ":team": team,
+        ":lightStatus": oppositLightStatus 
         }
     };
 
     var items = []
     
     var queryExecute = function(callback) {
-    docClient.query(params,function(err,result) {
+    docClient.scan(params,function(err,result) {
         if(err) {
             callback(err);
             } else {
@@ -73,6 +75,6 @@ exports.handler = (event, context, callback) => {
         });
     }
     queryExecute(callback);
-    console.log(items)*/
+    console.log("Im waste: " + items)
     console.log('Hello World')
 };
