@@ -13,19 +13,19 @@ exports.handler = (event, context, callback) => {
     
     var params = {
     TableName:"DeviceAndLightStatus",
-    ProjectionExpression: "#team",
-    FilterExpression: "#team = :team AND #lightStatus = :lightStatus",
+    ProjectionExpression: "#team, #lightStatus",
+    FilterExpression: "#team = :team",
     ExpressionAttributeNames: {
         "#team":"team",
         "#lightStatus":"lightStatus",
         },
     ExpressionAttributeValues: {
-        ":team": team,
-        ":lightStatus": oppositLightStatus 
+        ":team": team
         }
     };
 
     var items = []
+    var shouldTurnOffInstance = true
     
     var queryExecute = function(callback) {
     docClient.scan(params,function(err,result) {
@@ -37,8 +37,27 @@ exports.handler = (event, context, callback) => {
             console.log("Im not waste: " + items)
             //console.log("Im not waste: " + items.size())
             items.forEach(function(item){
-                console.log(item)
+                console.log(item.lightStatus)
+                if(item.lightStatus == 'on'){
+                    shouldTurnOffInstance = false
+                }
             });
+            console.log("shouldTurnOffInstance: " + shouldTurnOffInstance)
+        if(shouldTurnOffInstance == true){
+            var ec2 = new AWS.EC2({region: 'us-east-2'});
+            ec2.stopInstances({InstanceIds : ['i-0f428f17d8be4acd5'] },function (err, data) {
+                if (err) console.log(err, err.stack); // an error occurred
+                else console.log(data); // successful response
+                context.done(err,data);
+        });
+        }else{
+            var ec2 = new AWS.EC2({region: 'us-east-2'});
+            ec2.startInstances({InstanceIds : ['i-0f428f17d8be4acd5'] },function (err, data) {
+                if (err) console.log(err, err.stack); // an error occurred
+                else console.log(data); // successful response
+                context.done(err,data);
+        });
+    }
             if(result.LastEvaluatedKey) {
                 params.ExclusiveStartKey = result.LastEvaluatedKey;
                 queryExecute(callback);
@@ -51,10 +70,4 @@ exports.handler = (event, context, callback) => {
     queryExecute(callback);
     
     
-    var ec2 = new AWS.EC2({region: 'us-east-2'});
-    ec2.stopInstances({InstanceIds : ['i-0f428f17d8be4acd5'] },function (err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else console.log(data); // successful response
-        context.done(err,data);
-    });
 };
