@@ -1,8 +1,12 @@
 exports.handler = (event, context, callback) => {
     /*List of parameters from API*/
-    var lightStatus = "off"
-    var team = "p4r"
-    var deviceId = 3
+    var lightStatus = event.queryStringParameters.lightStatus
+    var team = event.queryStringParameters.team
+    var deviceId = parseInt(event.queryStringParameters.deviceId)
+    
+    console.log("parm lightStatus" + lightStatus)
+    console.log("parm team" + team)
+    console.log("parm deviceId" + deviceId)
     
     /*Running the ligic
     ->  Update the record (Irrespective)
@@ -46,8 +50,8 @@ exports.handler = (event, context, callback) => {
     console.log('Hello World')
     var response = {
         statusCode: '200',
-        body: ""
+        body: ''
     };
-    console.log("response: " + JSON.stringify(response))
+    console.log("response: " + JSON.stringify(event))
     callback(null, response);
 };
