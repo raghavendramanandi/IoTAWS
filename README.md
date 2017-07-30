@@ -18,3 +18,9 @@ Integration Request: Response Body Mapping
     "team": "$input.parms('team')",
     "lightStatus": "$input.parms('lightStatus')"
 }
+
+Respurces details:
+- Lambda : N. California
+- API Gateway : N. California
+- EC2 : Ohio
+- DynamoBD : N. California
